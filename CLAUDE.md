@@ -1,13 +1,53 @@
-# HubAccess — Claude Code Project Briefing
+# PatientONE — Claude Code Project Briefing
 ## Complete context for autonomous build · Read this first, ask nothing
+
+> **IMPORTANT: The app has been renamed from "HubAccess" to "PatientONE".** All UI references,
+> Swagger title, and README use "PatientONE". The Java package is still `com.hubaccess` (not renamed).
+
+---
+
+## Current State (as of 2026-03-28)
+
+The MVP is **fully built and deployed**:
+
+- **Frontend**: https://hub-frontend-production-1fbb.up.railway.app
+- **API**: https://hub-api-production-2eed.up.railway.app
+- **Swagger**: https://hub-api-production-2eed.up.railway.app/swagger-ui.html
+- **Login**: `admin@hub.com` / `admin123`
+- **Database**: Supabase project `uenaligvkjwmopjapsyh` (us-east-2), 19 tables deployed
+- **Deployment**: Railway (two services: hub-api, hub-frontend)
+
+### Local Development
+```bash
+# Backend (connects to Supabase via session pooler)
+cd hub-platform/hub-api && SPRING_PROFILES_ACTIVE=dev mvn spring-boot:run
+
+# Frontend
+cd hub-platform/hub-frontend && ng serve
+```
+
+### Key Implementation Notes
+- Supabase connection uses session pooler: `aws-1-us-east-2.pooler.supabase.com:5432`
+- Flyway is disabled (`spring.flyway.enabled=false`) — schema managed via Supabase MCP
+- Hibernate ddl-auto is `none` in dev profile (schema already exists)
+- Frontend prod build calls Railway API URL directly (no nginx proxy)
+- Admin password was bootstrapped via `/api/v1/auth/bootstrap` endpoint (can be removed)
+- User management includes create, edit (inline), delete, and program assignment with multi-select modal
+- CORS allows `localhost:4200` and the Railway frontend domain
+
+### Seed Data in Supabase
+- 4 roles: HubAdmin, Supervisor, CaseManager, ManufacturerViewer
+- Admin user: admin@hub.com (HubAdmin role)
+- Manufacturer: Acme Pharma
+- Program: Rezdiffra Access Program (with default ProgramConfig)
 
 ---
 
 ## 0. How to use this document
 
-You are Claude Code operating in `--dangerously-skip-permissions` mode on a greenfield project.
-This document contains everything you need. Do not ask the user clarifying questions that are
-answered here. Make decisions, build, and report what you've done.
+This document was the original build specification. The app is now built.
+Use it as reference for the data model, API contracts, business rules, and UI specs.
+The mockup files are in `prd-artifacts/` (gitignored).
 
 When in doubt on an implementation detail not covered here: choose the simpler, more maintainable
 option and leave a `// TODO:` comment explaining your choice.
