@@ -26,10 +26,16 @@ export class AdminComponent implements OnInit {
   showProgramForm = false;
   newProgram = { manufacturerId: '', name: '', drugBrandName: '', therapeuticArea: '' };
 
-  // New user form
+  // User form
   showUserForm = false;
+  editingUser: HubUserDto | null = null;
   newUser = { email: '', firstName: '', lastName: '', password: '', roleName: 'CaseManager' };
   roles = ['HubAdmin', 'Supervisor', 'CaseManager', 'ManufacturerViewer'];
+
+  // Program assignment
+  showProgramAssign: HubUserDto | null = null;
+  selectedProgramIds: Set<string> = new Set();
+  allProgramsSelected = false;
 
   constructor(private api: ApiService) {}
 
@@ -83,5 +89,81 @@ export class AdminComponent implements OnInit {
         this.userError = err.error?.error?.message || err.message || 'Failed to create user';
       }
     });
+  }
+
+  startEditUser(user: HubUserDto): void {
+    this.editingUser = { ...user };
+  }
+
+  saveUser(): void {
+    if (!this.editingUser) return;
+    this.api.put<HubUserDto>(`/users/${this.editingUser.id}`, {
+      firstName: this.editingUser.firstName,
+      lastName: this.editingUser.lastName,
+      status: this.editingUser.status
+    }).subscribe(() => {
+      this.editingUser = null;
+      this.loadUsers();
+    });
+  }
+
+  cancelEditUser(): void {
+    this.editingUser = null;
+  }
+
+  deleteUser(user: HubUserDto): void {
+    if (!confirm(`Delete user ${user.firstName} ${user.lastName}?`)) return;
+    this.api.delete(`/users/${user.id}`).subscribe({
+      next: () => this.loadUsers(),
+      error: () => this.loadUsers()
+    });
+  }
+
+  openProgramAssign(user: HubUserDto): void {
+    this.showProgramAssign = user;
+    this.selectedProgramIds = new Set(user.programIds || []);
+    this.allProgramsSelected = this.programs.length > 0 &&
+      this.programs.every(p => this.selectedProgramIds.has(p.id));
+  }
+
+  closeProgramAssign(): void {
+    this.showProgramAssign = null;
+    this.selectedProgramIds = new Set();
+    this.allProgramsSelected = false;
+  }
+
+  toggleProgram(programId: string): void {
+    if (this.selectedProgramIds.has(programId)) {
+      this.selectedProgramIds.delete(programId);
+    } else {
+      this.selectedProgramIds.add(programId);
+    }
+    this.allProgramsSelected = this.programs.every(p => this.selectedProgramIds.has(p.id));
+  }
+
+  toggleAllPrograms(): void {
+    if (this.allProgramsSelected) {
+      this.selectedProgramIds.clear();
+      this.allProgramsSelected = false;
+    } else {
+      this.programs.forEach(p => this.selectedProgramIds.add(p.id));
+      this.allProgramsSelected = true;
+    }
+  }
+
+  saveProgramAssignments(): void {
+    if (!this.showProgramAssign) return;
+    const programIds = Array.from(this.selectedProgramIds);
+    this.api.post(`/users/${this.showProgramAssign.id}/programs`, {
+      programIds,
+      accessLevel: 'ReadWrite'
+    }).subscribe(() => {
+      this.closeProgramAssign();
+      this.loadUsers();
+    });
+  }
+
+  isAdmin(user: HubUserDto): boolean {
+    return user.roles?.includes('HubAdmin');
   }
 }

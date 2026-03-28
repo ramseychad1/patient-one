@@ -93,6 +93,13 @@ public class UserService {
     }
 
     @Transactional
+    public void deleteUser(UUID id) {
+        HubUser user = userRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("User not found: " + id));
+        userRepository.delete(user);
+    }
+
+    @Transactional
     public void assignPrograms(UUID userId, AssignProgramsRequest request) {
         HubUser user = userRepository.findById(userId)
             .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));

@@ -108,29 +108,30 @@
     <button class="btn-primary" (click)="showUserForm = !showUserForm">+ Add User</button>
   </div>
 
-  <div *ngIf="showUserForm" class="form-card card">
+  <!-- Add User Form -->
+  <form *ngIf="showUserForm" class="form-card card" (submit)="$event.preventDefault(); createUser()">
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">First Name</label>
-        <input class="form-input" [(ngModel)]="newUser.firstName" placeholder="First name">
+        <input class="form-input" [(ngModel)]="newUser.firstName" name="firstName" placeholder="First name">
       </div>
       <div class="form-group">
         <label class="form-label">Last Name</label>
-        <input class="form-input" [(ngModel)]="newUser.lastName" placeholder="Last name">
+        <input class="form-input" [(ngModel)]="newUser.lastName" name="lastName" placeholder="Last name">
       </div>
       <div class="form-group">
         <label class="form-label">Email</label>
-        <input class="form-input" [(ngModel)]="newUser.email" placeholder="user@organization.com">
+        <input class="form-input" [(ngModel)]="newUser.email" name="email" placeholder="user&#64;organization.com">
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Password</label>
-        <input class="form-input" type="password" [(ngModel)]="newUser.password" placeholder="Minimum 8 characters">
+        <input class="form-input" type="password" [(ngModel)]="newUser.password" name="password" placeholder="Minimum 8 characters" autocomplete="new-password">
       </div>
       <div class="form-group">
         <label class="form-label">Role</label>
-        <select class="form-input" [(ngModel)]="newUser.roleName">
+        <select class="form-input" [(ngModel)]="newUser.roleName" name="roleName">
           <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
         </select>
       </div>
@@ -138,27 +139,103 @@
     </div>
     <div *ngIf="userError" class="form-error">{{ userError }}</div>
     <div class="form-actions">
-      <button class="btn-primary" (click)="createUser()">Create User</button>
-      <button class="btn-secondary" (click)="showUserForm = false">Cancel</button>
+      <button class="btn-primary" type="submit">Create User</button>
+      <button class="btn-secondary" type="button" (click)="showUserForm = false">Cancel</button>
+    </div>
+  </form>
+
+  <!-- Program Assignment Modal -->
+  <div *ngIf="showProgramAssign" class="modal-overlay" (click)="closeProgramAssign()">
+    <div class="modal-card card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Assign Programs — {{ showProgramAssign.firstName }} {{ showProgramAssign.lastName }}</h3>
+        <button class="modal-close" (click)="closeProgramAssign()">×</button>
+      </div>
+      <div class="modal-body">
+        <label class="program-check" [class.checked]="allProgramsSelected" (click)="toggleAllPrograms()">
+          <div class="check-box"></div>
+          <span class="check-label"><strong>All Programs</strong></span>
+          <span *ngIf="isAdmin(showProgramAssign)" class="pill info" style="margin-left:8px">Admin — full access</span>
+        </label>
+        <div class="program-divider"></div>
+        <label *ngFor="let p of programs" class="program-check"
+               [class.checked]="selectedProgramIds.has(p.id)"
+               (click)="toggleProgram(p.id)">
+          <div class="check-box"></div>
+          <div class="check-info">
+            <span class="check-label">{{ p.name }}</span>
+            <span class="check-sub">{{ p.drugBrandName }} · {{ p.manufacturerName }}</span>
+          </div>
+        </label>
+        <div *ngIf="programs.length === 0" class="empty-state">No programs available. Create a program first.</div>
+      </div>
+      <div class="modal-footer">
+        <span class="modal-count">{{ selectedProgramIds.size }} of {{ programs.length }} selected</span>
+        <div class="form-actions">
+          <button class="btn-secondary" (click)="closeProgramAssign()">Cancel</button>
+          <button class="btn-primary" (click)="saveProgramAssignments()">Save Assignments</button>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- Users Table -->
   <div class="data-table card">
-    <div class="dt-row header">
+    <div class="dt-row dt-row-users header">
       <span class="dt-col">Name</span>
       <span class="dt-col">Email</span>
       <span class="dt-col">Roles</span>
+      <span class="dt-col">Programs</span>
       <span class="dt-col">Status</span>
       <span class="dt-col">Last Login</span>
+      <span class="dt-col dt-actions-col">Actions</span>
     </div>
-    <div *ngFor="let u of users" class="dt-row">
-      <span class="dt-col dt-name">{{ u.firstName }} {{ u.lastName }}</span>
-      <span class="dt-col">{{ u.email }}</span>
-      <span class="dt-col">
-        <span *ngFor="let r of u.roles" class="pill info" style="margin-right:4px">{{ r }}</span>
-      </span>
-      <span class="dt-col"><span class="pill" [ngClass]="u.status === 'Active' ? 'ok' : 'neutral'">{{ u.status }}</span></span>
-      <span class="dt-col dt-date">{{ u.lastLoginAt ? (u.lastLoginAt | date:'short') : 'Never' }}</span>
-    </div>
+
+    <ng-container *ngFor="let u of users">
+      <!-- View mode -->
+      <div *ngIf="editingUser?.id !== u.id" class="dt-row dt-row-users">
+        <span class="dt-col dt-name">{{ u.firstName }} {{ u.lastName }}</span>
+        <span class="dt-col">{{ u.email }}</span>
+        <span class="dt-col">
+          <span *ngFor="let r of u.roles" class="pill info" style="margin-right:4px">{{ r }}</span>
+        </span>
+        <span class="dt-col">
+          <span class="program-count" (click)="openProgramAssign(u)">
+            {{ isAdmin(u) ? 'All' : (u.programIds?.length || 0) + ' assigned' }}
+            <span class="edit-icon">✎</span>
+          </span>
+        </span>
+        <span class="dt-col"><span class="pill" [ngClass]="u.status === 'Active' ? 'ok' : 'neutral'">{{ u.status }}</span></span>
+        <span class="dt-col dt-date">{{ u.lastLoginAt ? (u.lastLoginAt | date:'short') : 'Never' }}</span>
+        <span class="dt-col dt-actions-col">
+          <button class="action-btn" title="Edit" (click)="startEditUser(u)">✎</button>
+          <button class="action-btn action-delete" title="Delete" (click)="deleteUser(u)">✕</button>
+        </span>
+      </div>
+
+      <!-- Edit mode -->
+      <div *ngIf="editingUser?.id === u.id" class="dt-row dt-row-users dt-edit-row">
+        <span class="dt-col">
+          <input class="form-input form-input-sm" [(ngModel)]="editingUser!.firstName">
+        </span>
+        <span class="dt-col">{{ editingUser!.email }}</span>
+        <span class="dt-col">
+          <span *ngFor="let r of editingUser!.roles" class="pill info" style="margin-right:4px">{{ r }}</span>
+        </span>
+        <span class="dt-col">—</span>
+        <span class="dt-col">
+          <select class="form-input form-input-sm" [(ngModel)]="editingUser!.status">
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Locked">Locked</option>
+          </select>
+        </span>
+        <span class="dt-col">—</span>
+        <span class="dt-col dt-actions-col">
+          <button class="action-btn action-save" title="Save" (click)="saveUser()">✓</button>
+          <button class="action-btn" title="Cancel" (click)="cancelEditUser()">✕</button>
+        </span>
+      </div>
+    </ng-container>
   </div>
 </div>

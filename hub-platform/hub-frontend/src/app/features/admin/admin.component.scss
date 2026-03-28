@@ -30,6 +30,7 @@
   outline: none; transition: border-color 0.15s;
   &:focus { border-color: var(--brand); }
 }
+.form-input-sm { padding: 5px 8px; font-size: 12px; }
 .form-error {
   color: var(--s-urgent); font-size: 12px; font-weight: 500;
   margin-bottom: 12px; padding: 8px 12px;
@@ -50,11 +51,86 @@
     background: var(--page);
   }
 }
+.dt-row-users {
+  grid-template-columns: 1fr 1.2fr 100px 100px 80px 120px 80px;
+}
+.dt-edit-row { background: var(--brand-tint); }
 .dt-name { font-weight: 600; }
 .dt-date { font-size: 12px; color: var(--t3); }
+.dt-actions-col { text-align: right; }
 
 .config-link {
   font-size: 12px; font-weight: 600; color: var(--brand);
   text-decoration: none;
   &:hover { text-decoration: underline; }
 }
+
+// Action buttons
+.action-btn {
+  width: 28px; height: 28px; border: none; border-radius: var(--r-md);
+  background: transparent; cursor: pointer; font-size: 14px;
+  color: var(--t3); transition: all 0.12s;
+  &:hover { background: var(--border); color: var(--t1); }
+}
+.action-delete:hover { background: var(--s-urgent-bg); color: var(--s-urgent); }
+.action-save { color: var(--s-ok); &:hover { background: var(--s-ok-bg); } }
+
+// Program count link
+.program-count {
+  font-size: 12px; color: var(--brand); cursor: pointer; font-weight: 600;
+  .edit-icon { font-size: 10px; margin-left: 4px; opacity: 0; transition: opacity 0.12s; }
+  &:hover .edit-icon { opacity: 1; }
+}
+
+// Modal
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-card {
+  width: 500px; max-height: 80vh; display: flex; flex-direction: column;
+  border-radius: var(--r-xl); overflow: hidden;
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px; border-bottom: 1px solid var(--border);
+  h3 { font-size: 16px; font-weight: 700; color: var(--t1); }
+}
+.modal-close {
+  width: 28px; height: 28px; border: none; background: transparent;
+  font-size: 20px; color: var(--t3); cursor: pointer; border-radius: var(--r-md);
+  &:hover { background: var(--border); color: var(--t1); }
+}
+.modal-body {
+  padding: 16px 24px; overflow-y: auto; flex: 1;
+}
+.modal-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px; border-top: 1px solid var(--border);
+}
+.modal-count { font-size: 12px; color: var(--t3); font-weight: 600; }
+
+// Program checkboxes
+.program-check {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px; border-radius: var(--r-md);
+  cursor: pointer; transition: background 0.12s; user-select: none;
+  &:hover { background: var(--brand-tint); }
+  &.checked .check-box {
+    background: var(--brand); border-color: var(--brand);
+    &::after { content: '✓'; font-size: 10px; color: #fff; font-weight: 700; }
+  }
+}
+.check-box {
+  width: 18px; height: 18px; border-radius: 4px;
+  border: 2px solid var(--border-strong); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s;
+}
+.check-info { display: flex; flex-direction: column; gap: 1px; }
+.check-label { font-size: 13px; font-weight: 500; color: var(--t1); }
+.check-sub { font-size: 11px; color: var(--t3); }
+.program-divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+.empty-state { padding: 20px; text-align: center; color: var(--t3); font-size: 13px; }

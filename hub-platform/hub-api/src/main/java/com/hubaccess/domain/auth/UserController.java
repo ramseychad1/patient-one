@@ -45,6 +45,13 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(userService.updateUser(id, request)));
     }
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('HubAdmin')")
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
     @PostMapping("/{id}/programs")
     @PreAuthorize("hasRole('HubAdmin')")
     public ResponseEntity<ApiResponse<Void>> assignPrograms(@PathVariable UUID id, @Valid @RequestBody AssignProgramsRequest request) {
