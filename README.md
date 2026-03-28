@@ -1,10 +1,10 @@
-# HubAccess
+# PatientONE
 
 Multi-tenant case management and patient journey platform for Patient Access Hub (PAH) organizations supporting specialty pharmaceutical manufacturers.
 
 ## What it does
 
-Hub case managers use HubAccess to track specialty pharma patients from initial enrollment through ongoing therapy adherence. The system supports multiple pharmaceutical manufacturers, each with multiple drug programs and independently configurable rules.
+Hub case managers use PatientONE to track specialty pharma patients from initial enrollment through ongoing therapy adherence. The system supports multiple pharmaceutical manufacturers, each with multiple drug programs and independently configurable rules.
 
 **Primary user (MVP):** Hub case managers
 
