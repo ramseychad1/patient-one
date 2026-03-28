@@ -1,0 +1,4 @@
+-- RLS policies are applied via Supabase MCP for the hosted database.
+-- For local dev with docker-compose, RLS is not enforced since the app
+-- handles program-scoping at the application layer.
+-- This migration is a placeholder for documentation purposes.

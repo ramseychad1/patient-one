@@ -1,0 +1,43 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">All Cases</h1>
+    <p class="page-sub">{{ totalCases }} total cases</p>
+  </div>
+  <div class="header-actions">
+    <input class="search-input" type="text" placeholder="Search cases..."
+           [(ngModel)]="searchTerm">
+  </div>
+</div>
+
+<div class="cases-table card">
+  <div class="case-row header">
+    <span class="col-case">Case #</span>
+    <span class="col-patient">Patient</span>
+    <span class="col-program">Program</span>
+    <span class="col-stage">Stage</span>
+    <span class="col-priority">Priority</span>
+    <span class="col-source">Source</span>
+    <span class="col-date">Created</span>
+  </div>
+  <a *ngFor="let c of filteredCases"
+     class="case-row"
+     [class.urgent-row]="c.priority === 'Urgent'"
+     [routerLink]="['/cases', c.id]">
+    <span class="col-case mono">{{ c.caseNumber }}</span>
+    <span class="col-patient">{{ c.patient?.firstName }} {{ c.patient?.lastName }}</span>
+    <span class="col-program">{{ c.drugBrandName }}</span>
+    <span class="col-stage">
+      <span class="pill" [ngClass]="getStagePillClass(c.stage)">{{ c.stage }}</span>
+    </span>
+    <span class="col-priority">
+      <span class="pill" [ngClass]="c.priority === 'Urgent' ? 'urgent' : c.priority === 'High' ? 'warn' : 'neutral'">
+        {{ c.priority }}
+      </span>
+    </span>
+    <span class="col-source">{{ c.enrollmentSource || '—' }}</span>
+    <span class="col-date">{{ c.createdAt | date:'shortDate' }}</span>
+  </a>
+  <div *ngIf="filteredCases.length === 0" class="empty-state">
+    No cases found matching your criteria.
+  </div>
+</div>

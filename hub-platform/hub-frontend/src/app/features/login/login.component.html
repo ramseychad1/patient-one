@@ -1,0 +1,92 @@
+<div class="brand-stripe"></div>
+
+<header class="topbar">
+  <div class="tb-logo">
+    <div class="lm">H</div>
+    <div>
+      <span class="lw-t">HubAccess</span>
+      <span class="lw-b">Patient Access Platform</span>
+    </div>
+  </div>
+  <button class="tb-theme" (click)="toggleTheme()">
+    {{ (themeService.isDarkMode$ | async) ? '◑ Dark' : '☀ Light' }}
+  </button>
+</header>
+
+<main class="main">
+  <div class="login-card">
+    <div class="card-accent"></div>
+    <div class="card-body">
+
+      <div class="card-logo">
+        <div class="cl-mark">H</div>
+        <div class="cl-text">
+          <span class="cl-top">HubAccess</span>
+          <span class="cl-bottom">Patient Access Platform</span>
+        </div>
+      </div>
+
+      <div class="card-headline">Welcome back.<br><strong>Sign in to continue.</strong></div>
+      <div class="card-sub">Patient access hub case management · Secure, HIPAA-compliant</div>
+
+      <div class="error-banner" *ngIf="errorMessage">
+        ⚠ {{ errorMessage }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Work email</label>
+        <input class="form-input" id="email" type="email"
+               placeholder="you&#64;organization.com" autocomplete="email"
+               [(ngModel)]="email" (keydown)="onKeyDown($event)">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <div class="pw-wrap">
+          <input class="form-input" id="password"
+                 [type]="showPassword ? 'text' : 'password'"
+                 placeholder="Enter your password" autocomplete="current-password"
+                 [(ngModel)]="password" (keydown)="onKeyDown($event)">
+          <button class="pw-toggle" type="button" (click)="togglePassword()">
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="form-row-between">
+        <div class="remember" [class.checked]="rememberMe" (click)="rememberMe = !rememberMe">
+          <div class="rem-check"></div>
+          <span class="rem-label">Keep me signed in</span>
+        </div>
+        <a class="forgot" href="#">Forgot password?</a>
+      </div>
+
+      <button class="btn-submit" (click)="login()" [disabled]="loading">
+        {{ loading ? 'Signing in...' : 'Sign in →' }}
+      </button>
+
+      <div class="card-divider"></div>
+
+      <div class="sso-note">
+        Using SSO? <a class="sso-link" href="#">Sign in with your identity provider</a>
+      </div>
+
+    </div>
+    <div class="card-footer">
+      <span class="cf-text">Secured with TLS 1.3 · HIPAA compliant</span>
+      <div class="cf-links">
+        <span class="cf-link">Privacy policy</span>
+        <span class="cf-link">Terms of use</span>
+        <span class="cf-link">Support</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="page-footer">
+  <div class="pf-brand">
+    <div class="pf-mark">H</div>
+    <span class="pf-name">HubAccess</span>
+  </div>
+  <span class="pf-copy">© 2025 Hub Access Platform. All rights reserved.</span>
+</footer>

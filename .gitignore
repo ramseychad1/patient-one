@@ -1,0 +1,29 @@
+# PRD artifacts
+prd-artifacts/
+
+# Java / Maven
+hub-platform/hub-api/target/
+hub-platform/hub-api/.mvn/
+hub-platform/hub-api/*.iml
+
+# Angular
+hub-platform/hub-frontend/node_modules/
+hub-platform/hub-frontend/dist/
+hub-platform/hub-frontend/.angular/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+*.env.local
+
+# Docker
+pgdata/
+
+# OS
+.DS_Store
+Thumbs.db

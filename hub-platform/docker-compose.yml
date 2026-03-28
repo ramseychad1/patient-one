@@ -1,0 +1,41 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: hub_dev
+      POSTGRES_USER: hub
+      POSTGRES_PASSWORD: localdevpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hub -d hub_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: ./hub-api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/hub_dev
+      SPRING_DATASOURCE_USERNAME: hub
+      SPRING_DATASOURCE_PASSWORD: localdevpassword
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-key-minimum-256-bits-long-for-hmac-sha256-algorithm-needs-this}
+      SPRING_PROFILES_ACTIVE: dev
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./hub-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:

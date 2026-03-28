@@ -1,0 +1,60 @@
+.page-header { margin-bottom: 24px; }
+.page-title { font-size: 22px; font-weight: 700; color: var(--t1); }
+
+.tabs {
+  display: flex; gap: 0; margin-bottom: 20px;
+  border-bottom: 2px solid var(--border);
+}
+.tab {
+  padding: 10px 20px; background: none; border: none;
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  color: var(--t3); cursor: pointer; border-bottom: 2px solid transparent;
+  margin-bottom: -2px; transition: all 0.12s;
+  &:hover { color: var(--t1); }
+  &.active { color: var(--brand); border-bottom-color: var(--brand); }
+}
+
+.tab-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; font-size: 13px; color: var(--t3);
+}
+
+.form-card { padding: 20px; margin-bottom: 16px; }
+.form-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--t2); }
+.form-input {
+  padding: 8px 12px; border-radius: var(--r-md);
+  border: 1.5px solid var(--border-md); background: var(--page);
+  color: var(--t1); font-family: var(--font); font-size: 13px;
+  outline: none; transition: border-color 0.15s;
+  &:focus { border-color: var(--brand); }
+}
+.form-error {
+  color: var(--s-urgent); font-size: 12px; font-weight: 500;
+  margin-bottom: 12px; padding: 8px 12px;
+  background: var(--s-urgent-bg); border-radius: var(--r-md);
+}
+.form-actions { display: flex; gap: 8px; }
+
+.data-table { overflow: hidden; }
+.dt-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  align-items: center; padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px; color: var(--t1);
+
+  &.header {
+    font-size: 11px; font-weight: 700; color: var(--t3);
+    text-transform: uppercase; letter-spacing: 0.04em;
+    background: var(--page);
+  }
+}
+.dt-name { font-weight: 600; }
+.dt-date { font-size: 12px; color: var(--t3); }
+
+.config-link {
+  font-size: 12px; font-weight: 600; color: var(--brand);
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}

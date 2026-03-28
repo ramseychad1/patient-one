@@ -1,0 +1,164 @@
+<div class="page-header">
+  <h1 class="page-title">Administration</h1>
+</div>
+
+<div class="tabs">
+  <button class="tab" [class.active]="activeTab === 'manufacturers'" (click)="setTab('manufacturers')">Manufacturers</button>
+  <button class="tab" [class.active]="activeTab === 'programs'" (click)="setTab('programs')">Programs</button>
+  <button class="tab" [class.active]="activeTab === 'users'" (click)="setTab('users')">Users</button>
+</div>
+
+<!-- Manufacturers Tab -->
+<div *ngIf="activeTab === 'manufacturers'" class="tab-content">
+  <div class="tab-header">
+    <span>{{ manufacturers.length }} manufacturers</span>
+    <button class="btn-primary" (click)="showMfrForm = !showMfrForm">+ Add Manufacturer</button>
+  </div>
+
+  <div *ngIf="showMfrForm" class="form-card card">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input class="form-input" [(ngModel)]="newMfr.name" placeholder="Manufacturer name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contact Name</label>
+        <input class="form-input" [(ngModel)]="newMfr.primaryContactName" placeholder="Contact name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contact Email</label>
+        <input class="form-input" [(ngModel)]="newMfr.primaryContactEmail" placeholder="email@example.com">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-primary" (click)="createManufacturer()">Create</button>
+      <button class="btn-secondary" (click)="showMfrForm = false">Cancel</button>
+    </div>
+  </div>
+
+  <div class="data-table card">
+    <div class="dt-row header">
+      <span class="dt-col">Name</span>
+      <span class="dt-col">Status</span>
+      <span class="dt-col">Contact</span>
+      <span class="dt-col">Created</span>
+    </div>
+    <div *ngFor="let m of manufacturers" class="dt-row">
+      <span class="dt-col dt-name">{{ m.name }}</span>
+      <span class="dt-col"><span class="pill" [ngClass]="m.status === 'Active' ? 'ok' : 'neutral'">{{ m.status }}</span></span>
+      <span class="dt-col">{{ m.primaryContactName || '—' }}</span>
+      <span class="dt-col dt-date">{{ m.createdAt | date:'shortDate' }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Programs Tab -->
+<div *ngIf="activeTab === 'programs'" class="tab-content">
+  <div class="tab-header">
+    <span>{{ programs.length }} programs</span>
+    <button class="btn-primary" (click)="showProgramForm = !showProgramForm">+ Add Program</button>
+  </div>
+
+  <div *ngIf="showProgramForm" class="form-card card">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Manufacturer</label>
+        <select class="form-input" [(ngModel)]="newProgram.manufacturerId">
+          <option value="">Select manufacturer</option>
+          <option *ngFor="let m of manufacturers" [value]="m.id">{{ m.name }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Program Name</label>
+        <input class="form-input" [(ngModel)]="newProgram.name" placeholder="Program name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Drug Brand Name</label>
+        <input class="form-input" [(ngModel)]="newProgram.drugBrandName" placeholder="Drug brand name">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-primary" (click)="createProgram()">Create</button>
+      <button class="btn-secondary" (click)="showProgramForm = false">Cancel</button>
+    </div>
+  </div>
+
+  <div class="data-table card">
+    <div class="dt-row header">
+      <span class="dt-col">Program</span>
+      <span class="dt-col">Drug</span>
+      <span class="dt-col">Manufacturer</span>
+      <span class="dt-col">Status</span>
+      <span class="dt-col">Config</span>
+    </div>
+    <div *ngFor="let p of programs" class="dt-row">
+      <span class="dt-col dt-name">{{ p.name }}</span>
+      <span class="dt-col">{{ p.drugBrandName }}</span>
+      <span class="dt-col">{{ p.manufacturerName }}</span>
+      <span class="dt-col"><span class="pill" [ngClass]="p.status === 'Active' ? 'ok' : 'neutral'">{{ p.status }}</span></span>
+      <span class="dt-col"><a class="config-link" [routerLink]="['/admin/programs', p.id, 'config']">Configure →</a></span>
+    </div>
+  </div>
+</div>
+
+<!-- Users Tab -->
+<div *ngIf="activeTab === 'users'" class="tab-content">
+  <div class="tab-header">
+    <span>{{ users.length }} users</span>
+    <button class="btn-primary" (click)="showUserForm = !showUserForm">+ Add User</button>
+  </div>
+
+  <div *ngIf="showUserForm" class="form-card card">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">First Name</label>
+        <input class="form-input" [(ngModel)]="newUser.firstName" placeholder="First name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Last Name</label>
+        <input class="form-input" [(ngModel)]="newUser.lastName" placeholder="Last name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" [(ngModel)]="newUser.email" placeholder="user@organization.com">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" [(ngModel)]="newUser.password" placeholder="Minimum 8 characters">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <select class="form-input" [(ngModel)]="newUser.roleName">
+          <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+        </select>
+      </div>
+      <div class="form-group"></div>
+    </div>
+    <div *ngIf="userError" class="form-error">{{ userError }}</div>
+    <div class="form-actions">
+      <button class="btn-primary" (click)="createUser()">Create User</button>
+      <button class="btn-secondary" (click)="showUserForm = false">Cancel</button>
+    </div>
+  </div>
+
+  <div class="data-table card">
+    <div class="dt-row header">
+      <span class="dt-col">Name</span>
+      <span class="dt-col">Email</span>
+      <span class="dt-col">Roles</span>
+      <span class="dt-col">Status</span>
+      <span class="dt-col">Last Login</span>
+    </div>
+    <div *ngFor="let u of users" class="dt-row">
+      <span class="dt-col dt-name">{{ u.firstName }} {{ u.lastName }}</span>
+      <span class="dt-col">{{ u.email }}</span>
+      <span class="dt-col">
+        <span *ngFor="let r of u.roles" class="pill info" style="margin-right:4px">{{ r }}</span>
+      </span>
+      <span class="dt-col"><span class="pill" [ngClass]="u.status === 'Active' ? 'ok' : 'neutral'">{{ u.status }}</span></span>
+      <span class="dt-col dt-date">{{ u.lastLoginAt ? (u.lastLoginAt | date:'short') : 'Never' }}</span>
+    </div>
+  </div>
+</div>

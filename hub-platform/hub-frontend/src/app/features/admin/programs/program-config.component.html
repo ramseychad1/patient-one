@@ -1,0 +1,102 @@
+<a class="back-link" routerLink="/admin">← Back to Admin</a>
+
+<div *ngIf="program && config" class="config-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">{{ program.name }}</h1>
+      <p class="page-sub">{{ program.drugBrandName }} · Program Configuration</p>
+    </div>
+    <button class="btn-primary" (click)="save()" [disabled]="saving">
+      {{ saving ? 'Saving...' : 'Save Changes' }}
+    </button>
+  </div>
+
+  <!-- Workflow Section -->
+  <div class="config-section card">
+    <h2 class="section-title">Workflow Settings</h2>
+    <div class="toggle-grid">
+      <label class="toggle-row">
+        <span class="toggle-label">PA Required</span>
+        <input type="checkbox" [(ngModel)]="config.paRequired">
+      </label>
+      <label class="toggle-row">
+        <span class="toggle-label">Adherence Program</span>
+        <input type="checkbox" [(ngModel)]="config.adherenceProgramEnabled">
+      </label>
+      <label class="toggle-row">
+        <span class="toggle-label">REMS Tracking</span>
+        <input type="checkbox" [(ngModel)]="config.remsTrackingEnabled">
+      </label>
+    </div>
+  </div>
+
+  <!-- Financial Assistance Section -->
+  <div class="config-section card">
+    <h2 class="section-title">Financial Assistance</h2>
+    <div class="toggle-grid">
+      <label class="toggle-row">
+        <span class="toggle-label">Copay Program</span>
+        <input type="checkbox" [(ngModel)]="config.copayEnabled">
+      </label>
+      <label class="toggle-row">
+        <span class="toggle-label">PAP Program</span>
+        <input type="checkbox" [(ngModel)]="config.papEnabled">
+      </label>
+      <label class="toggle-row">
+        <span class="toggle-label">Bridge Program</span>
+        <input type="checkbox" [(ngModel)]="config.bridgeEnabled">
+      </label>
+    </div>
+
+    <div *ngIf="config.papEnabled" class="sub-config">
+      <h3 class="sub-title">PAP Settings</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">FPL Threshold %</label>
+          <input class="form-input" type="number" [(ngModel)]="config.papFplThresholdPct">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Supply Days</label>
+          <input class="form-input" type="number" [(ngModel)]="config.papSupplyDays">
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="config.bridgeEnabled" class="sub-config">
+      <h3 class="sub-title">Bridge Settings</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Supply Days</label>
+          <input class="form-input" type="number" [(ngModel)]="config.bridgeSupplyDays">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Max Episodes/Year</label>
+          <input class="form-input" type="number" [(ngModel)]="config.bridgeMaxEpisodesPerYear">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PA SLA Section -->
+  <div class="config-section card">
+    <h2 class="section-title">PA SLA Settings</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Submit Deadline (days)</label>
+        <input class="form-input" type="number" [(ngModel)]="config.paSlaSumbitDays">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Follow-up (days)</label>
+        <input class="form-input" type="number" [(ngModel)]="config.paSlaFollowupDays">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Appeal Window (days)</label>
+        <input class="form-input" type="number" [(ngModel)]="config.paAppealWindowDays">
+      </div>
+    </div>
+    <label class="toggle-row">
+      <span class="toggle-label">Auto-escalate on breach</span>
+      <input type="checkbox" [(ngModel)]="config.paAutoEscalateOnBreach">
+    </label>
+  </div>
+</div>

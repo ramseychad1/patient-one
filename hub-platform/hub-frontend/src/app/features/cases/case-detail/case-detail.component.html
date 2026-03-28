@@ -1,0 +1,141 @@
+<div *ngIf="caseData" class="case-detail">
+  <!-- Back link -->
+  <a class="back-link" routerLink="/dashboard">← Back to My Cases</a>
+
+  <!-- Case Header -->
+  <div class="case-header card">
+    <div class="ch-top">
+      <div class="ch-left">
+        <span class="case-number mono">{{ caseData.caseNumber }}</span>
+        <span class="pill" [ngClass]="getStagePillClass(caseData.stage)">{{ caseData.stage }}</span>
+        <span class="pill" [ngClass]="caseData.priority === 'Urgent' ? 'urgent' : caseData.priority === 'High' ? 'warn' : 'neutral'">
+          {{ caseData.priority }}
+        </span>
+        <span *ngIf="caseData.slaBreachFlag" class="pill urgent">SLA Breach</span>
+      </div>
+      <div class="ch-right">
+        <button class="btn-secondary">Edit Case</button>
+      </div>
+    </div>
+
+    <div class="ch-info">
+      <div class="info-block">
+        <span class="info-label">Patient</span>
+        <span class="info-value">{{ caseData.patient?.firstName }} {{ caseData.patient?.lastName }}</span>
+        <span class="info-sub" *ngIf="caseData.patient?.dateOfBirth">DOB: {{ caseData.patient.dateOfBirth }}</span>
+      </div>
+      <div class="info-block">
+        <span class="info-label">Program</span>
+        <span class="info-value">{{ caseData.drugBrandName }}</span>
+        <span class="info-sub">{{ caseData.programName }} · {{ caseData.manufacturerName }}</span>
+      </div>
+      <div class="info-block">
+        <span class="info-label">Prescriber</span>
+        <span class="info-value">{{ caseData.prescriber ? caseData.prescriber.firstName + ' ' + caseData.prescriber.lastName : '—' }}</span>
+        <span class="info-sub" *ngIf="caseData.prescriber?.npi">NPI: {{ caseData.prescriber?.npi }}</span>
+      </div>
+      <div class="info-block">
+        <span class="info-label">Assigned CM</span>
+        <span class="info-value">{{ caseData.assignedCmName || 'Unassigned' }}</span>
+      </div>
+      <div class="info-block">
+        <span class="info-label">Consent</span>
+        <span class="pill" [ngClass]="caseData.consentStatus === 'Received' ? 'ok' : 'neutral'">
+          {{ caseData.consentStatus }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Journey Progress -->
+  <div class="journey-bar card">
+    <div *ngFor="let s of ['Referral','Enrollment','BIVB','PA','FinancialAssist','Initiation','Adherence']"
+         class="journey-step"
+         [class.active]="s === caseData.stage"
+         [class.completed]="isStageCompleted(s)">
+      <div class="step-dot"></div>
+      <span class="step-label">{{ s === 'FinancialAssist' ? 'Financial' : s }}</span>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab" [class.active]="activeTab === 'activity'" (click)="setTab('activity')">Activity</button>
+    <button class="tab" [class.active]="activeTab === 'tasks'" (click)="setTab('tasks')">Tasks ({{ tasks.length }})</button>
+    <button class="tab" [class.active]="activeTab === 'pa'" (click)="setTab('pa')">PA</button>
+    <button class="tab" [class.active]="activeTab === 'insurance'" (click)="setTab('insurance')">Insurance</button>
+  </div>
+
+  <!-- Activity Tab -->
+  <div *ngIf="activeTab === 'activity'" class="tab-content">
+    <div class="timeline">
+      <div *ngFor="let entry of timeline" class="timeline-entry">
+        <div class="te-dot"></div>
+        <div class="te-content">
+          <div class="te-header">
+            <span class="te-type pill neutral">{{ entry.type }}</span>
+            <span class="te-time">{{ entry.timestamp | date:'short' }}</span>
+          </div>
+          <div class="te-summary">{{ entry.summary }}</div>
+          <div *ngIf="entry.details" class="te-details">{{ entry.details }}</div>
+          <div class="te-by">{{ entry.performedBy }}</div>
+        </div>
+      </div>
+      <div *ngIf="timeline.length === 0" class="empty-state">No activity yet.</div>
+    </div>
+  </div>
+
+  <!-- Tasks Tab -->
+  <div *ngIf="activeTab === 'tasks'" class="tab-content">
+    <div *ngFor="let task of tasks" class="task-item card">
+      <div class="task-header">
+        <span class="task-title">{{ task.title }}</span>
+        <span class="pill" [ngClass]="task.priority === 'Urgent' ? 'urgent' : task.priority === 'High' ? 'warn' : 'neutral'">
+          {{ task.priority }}
+        </span>
+      </div>
+      <div class="task-meta">
+        <span>{{ task.taskType }}</span>
+        <span *ngIf="task.dueDate">Due: {{ task.dueDate | date:'shortDate' }}</span>
+        <span class="pill" [ngClass]="task.status === 'Completed' ? 'ok' : task.status === 'InProgress' ? 'info' : 'neutral'">
+          {{ task.status }}
+        </span>
+      </div>
+    </div>
+    <div *ngIf="tasks.length === 0" class="empty-state">No tasks for this case.</div>
+  </div>
+
+  <!-- PA Tab -->
+  <div *ngIf="activeTab === 'pa'" class="tab-content">
+    <div *ngFor="let pa of paList" class="pa-item card">
+      <div class="pa-header">
+        <span class="pa-number mono">{{ pa.paNumber || 'Draft PA' }}</span>
+        <span class="pill" [ngClass]="pa.status === 'Approved' ? 'ok' : pa.status === 'Denied' ? 'urgent' : 'info'">
+          {{ pa.status }}
+        </span>
+      </div>
+      <div class="pa-meta">
+        <span>Attempt #{{ pa.attemptNumber }}</span>
+        <span *ngIf="pa.submittedDate">Submitted: {{ pa.submittedDate }}</span>
+        <span *ngIf="pa.slaBreached" class="pill urgent">SLA Breached</span>
+      </div>
+    </div>
+    <div *ngIf="paList.length === 0" class="empty-state">No prior authorizations.</div>
+  </div>
+
+  <!-- Insurance Tab -->
+  <div *ngIf="activeTab === 'insurance'" class="tab-content">
+    <div *ngFor="let plan of insurancePlans" class="insurance-item card">
+      <div class="ins-header">
+        <span class="ins-sequence pill info">{{ plan.planSequence }}</span>
+        <span class="ins-type">{{ plan.insuranceTypeCode }}</span>
+      </div>
+      <div class="ins-details">
+        <span *ngIf="plan.payerName">{{ plan.payerName }}</span>
+        <span *ngIf="plan.planName"> · {{ plan.planName }}</span>
+        <span *ngIf="plan.memberId"> · ID: {{ plan.memberId }}</span>
+      </div>
+    </div>
+    <div *ngIf="insurancePlans.length === 0" class="empty-state">No insurance plans recorded.</div>
+  </div>
+</div>

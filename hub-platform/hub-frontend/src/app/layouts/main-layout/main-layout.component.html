@@ -1,0 +1,63 @@
+<!-- Topbar -->
+<header class="topbar">
+  <div class="tb-left">
+    <div class="tb-logo">
+      <div class="logo-mark">H</div>
+      <div>
+        <span class="logo-title">HubAccess</span>
+        <span class="logo-sub">Patient Access Platform</span>
+      </div>
+    </div>
+  </div>
+  <div class="tb-right">
+    <button class="tb-theme" (click)="toggleTheme()">
+      {{ (themeService.isDarkMode$ | async) ? '◑ Dark' : '☀ Light' }}
+    </button>
+    <div class="tb-user">
+      <div class="user-avatar">{{ userInitial }}</div>
+    </div>
+  </div>
+</header>
+<div class="topbar-stripe"></div>
+
+<!-- Body -->
+<div class="layout-body">
+  <!-- Sidenav -->
+  <nav class="sidenav">
+    <div class="nav-links">
+      <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
+        <span class="material-icons nav-icon">dashboard</span>
+        <span class="nav-label">My Cases</span>
+      </a>
+      <a class="nav-item" routerLink="/cases" routerLinkActive="active">
+        <span class="material-icons nav-icon">folder_open</span>
+        <span class="nav-label">All Cases</span>
+      </a>
+      <a class="nav-item" routerLink="/tasks" routerLinkActive="active">
+        <span class="material-icons nav-icon">checklist</span>
+        <span class="nav-label">Task Queue</span>
+      </a>
+      <a class="nav-item" routerLink="/admin" routerLinkActive="active" *ngIf="authService.isAdmin()">
+        <span class="material-icons nav-icon">settings</span>
+        <span class="nav-label">Admin</span>
+      </a>
+    </div>
+    <div class="nav-footer">
+      <div class="nf-user">
+        <div class="nf-avatar">{{ userInitial }}</div>
+        <div class="nf-info">
+          <span class="nf-name">{{ userName }}</span>
+          <span class="nf-role">Case Manager</span>
+        </div>
+      </div>
+      <button class="nf-logout" (click)="logout()">
+        <span class="material-icons" style="font-size:18px">logout</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>

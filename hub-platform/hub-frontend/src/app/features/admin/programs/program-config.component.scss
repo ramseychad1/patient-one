@@ -1,0 +1,57 @@
+.back-link {
+  display: inline-block; font-size: 12px; font-weight: 600;
+  color: var(--brand); text-decoration: none; margin-bottom: 16px;
+  &:hover { text-decoration: underline; }
+}
+
+.page-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 24px;
+}
+.page-title { font-size: 22px; font-weight: 700; color: var(--t1); margin-bottom: 2px; }
+.page-sub { font-size: 13px; color: var(--t3); }
+
+.config-section {
+  padding: 24px; margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 16px; font-weight: 700; color: var(--t1);
+  margin-bottom: 16px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.toggle-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-radius: var(--r-md);
+  border: 1px solid var(--border); cursor: pointer;
+  transition: background 0.12s;
+  &:hover { background: var(--brand-tint); }
+}
+
+.toggle-label { font-size: 13px; font-weight: 500; color: var(--t1); }
+
+.sub-config {
+  margin-top: 16px; padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.sub-title {
+  font-size: 13px; font-weight: 700; color: var(--t2);
+  margin-bottom: 12px;
+}
+
+.form-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 12px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--t2); }
+.form-input {
+  padding: 8px 12px; border-radius: var(--r-md);
+  border: 1.5px solid var(--border-md); background: var(--page);
+  color: var(--t1); font-family: var(--font); font-size: 13px;
+  outline: none; transition: border-color 0.15s;
+  &:focus { border-color: var(--brand); }
+}

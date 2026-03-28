@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS hub_case (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  case_number VARCHAR(20) UNIQUE NOT NULL,
+  program_id UUID NOT NULL REFERENCES program(id),
+  patient_id UUID NOT NULL REFERENCES patient(id),
+  prescriber_id UUID REFERENCES prescriber(id),
+  assigned_cm_id UUID REFERENCES hub_user(id),
+  stage VARCHAR(30) NOT NULL DEFAULT 'Referral' CHECK (stage IN ('Referral','Enrollment','BIVB','PA','FinancialAssist','Initiation','Adherence','Closed')),
+  status VARCHAR(50) NOT NULL DEFAULT 'Active_Referral',
+  enrollment_source VARCHAR(10) CHECK (enrollment_source IN ('Portal','eRX')),
+  consent_status VARCHAR(20) NOT NULL DEFAULT 'Pending' CHECK (consent_status IN ('Pending','Sent','Received','Expired')),
+  consent_received_at TIMESTAMPTZ,
+  mi_status VARCHAR(20) CHECK (mi_status IN ('NotRequired','Pending','Sent','Resolved')),
+  mi_resolved_at TIMESTAMPTZ,
+  priority VARCHAR(10) NOT NULL DEFAULT 'Normal' CHECK (priority IN ('Normal','High','Urgent')),
+  sla_breach_flag BOOLEAN NOT NULL DEFAULT false,
+  escalation_flag BOOLEAN NOT NULL DEFAULT false,
+  closed_reason VARCHAR(200),
+  notes TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  created_by UUID REFERENCES hub_user(id)
+);

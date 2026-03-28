@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://aws-1-us-east-2.pooler.supabase.com:5432/postgres
+    username: postgres.uenaligvkjwmopjapsyh
+    password: "Aspinc1973!1973!"
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+jwt:
+  secret: dev-secret-key-minimum-256-bits-long-for-hmac-sha256-algorithm-needs-this
