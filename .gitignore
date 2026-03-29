@@ -24,6 +24,9 @@ hub-platform/hub-frontend/.angular/
 # Docker
 pgdata/
 
+# Screenshots
+screenshots/
+
 # OS
 .DS_Store
 Thumbs.db
