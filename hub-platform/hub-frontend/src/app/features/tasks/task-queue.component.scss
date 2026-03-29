@@ -22,6 +22,10 @@
 .task-card {
   padding: 16px 20px;
   &.overdue { border-left: 3px solid var(--s-urgent); }
+  &.completed {
+    opacity: 0.55;
+    .tc-title { text-decoration: line-through; }
+  }
 }
 
 .tc-top {
@@ -29,7 +33,7 @@
   margin-bottom: 8px;
 }
 .tc-left { flex: 1; }
-.tc-right { display: flex; gap: 8px; }
+.tc-right { display: flex; gap: 8px; align-items: center; }
 
 .tc-title { font-size: 14px; font-weight: 600; color: var(--t1); display: block; margin-bottom: 4px; }
 
@@ -51,5 +55,17 @@
 .tc-due { font-weight: 600; }
 .overdue-text { color: var(--s-urgent) !important; }
 .tc-auto { font-style: italic; }
+.tc-overdue-badge {
+  font-size: 10px; font-weight: 700; color: var(--s-urgent);
+  background: var(--s-urgent-bg); padding: 1px 8px; border-radius: var(--r-pill);
+}
+
+.tc-status-select {
+  padding: 4px 8px; border-radius: var(--r-md);
+  border: 1.5px solid var(--border-md); background: var(--card);
+  color: var(--t1); font-family: var(--font); font-size: 11px; font-weight: 600;
+  cursor: pointer; outline: none;
+  &:focus { border-color: var(--brand); }
+}
 
 .empty-state { padding: 60px; text-align: center; color: var(--t3); font-size: 14px; }

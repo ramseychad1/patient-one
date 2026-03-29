@@ -4,45 +4,84 @@
 
   <!-- Case Header -->
   <div class="case-header card">
-    <div class="ch-top">
-      <div class="ch-left">
-        <span class="case-number mono">{{ caseData.caseNumber }}</span>
-        <span class="pill" [ngClass]="getStagePillClass(caseData.stage)">{{ caseData.stage }}</span>
-        <span class="pill" [ngClass]="caseData.priority === 'Urgent' ? 'urgent' : caseData.priority === 'High' ? 'warn' : 'neutral'">
-          {{ caseData.priority }}
-        </span>
-        <span *ngIf="caseData.slaBreachFlag" class="pill urgent">SLA Breach</span>
+    <!-- View Mode -->
+    <div *ngIf="!editing">
+      <div class="ch-top">
+        <div class="ch-left">
+          <span class="case-number mono">{{ caseData.caseNumber }}</span>
+          <span class="pill" [ngClass]="getStagePillClass(caseData.stage)">{{ stageLabel(caseData.stage) }}</span>
+          <span class="pill" [ngClass]="caseData.priority === 'Urgent' ? 'urgent' : caseData.priority === 'High' ? 'warn' : 'neutral'">
+            {{ caseData.priority }}
+          </span>
+          <span *ngIf="caseData.slaBreachFlag" class="pill urgent">SLA Breach</span>
+        </div>
+        <div class="ch-right">
+          <button class="btn-secondary" (click)="startEdit()">Edit Case</button>
+        </div>
       </div>
-      <div class="ch-right">
-        <button class="btn-secondary">Edit Case</button>
+
+      <div class="ch-info">
+        <div class="info-block">
+          <span class="info-label">Patient</span>
+          <span class="info-value">{{ caseData.patient?.firstName }} {{ caseData.patient?.lastName }}</span>
+          <span class="info-sub" *ngIf="caseData.patient?.dateOfBirth">DOB: {{ caseData.patient.dateOfBirth }}</span>
+        </div>
+        <div class="info-block">
+          <span class="info-label">Program</span>
+          <span class="info-value">{{ caseData.drugBrandName }}</span>
+          <span class="info-sub">{{ caseData.programName }} · {{ caseData.manufacturerName }}</span>
+        </div>
+        <div class="info-block">
+          <span class="info-label">Prescriber</span>
+          <span class="info-value">{{ caseData.prescriber ? caseData.prescriber.firstName + ' ' + caseData.prescriber.lastName : '—' }}</span>
+          <span class="info-sub" *ngIf="caseData.prescriber?.npi">NPI: {{ caseData.prescriber?.npi }}</span>
+        </div>
+        <div class="info-block">
+          <span class="info-label">Assigned CM</span>
+          <span class="info-value">{{ caseData.assignedCmName || 'Unassigned' }}</span>
+        </div>
+        <div class="info-block">
+          <span class="info-label">Consent</span>
+          <span class="pill" [ngClass]="caseData.consentStatus === 'Received' ? 'ok' : caseData.consentStatus === 'Expired' ? 'urgent' : 'neutral'">
+            {{ caseData.consentStatus }}
+          </span>
+        </div>
       </div>
     </div>
 
-    <div class="ch-info">
-      <div class="info-block">
-        <span class="info-label">Patient</span>
-        <span class="info-value">{{ caseData.patient?.firstName }} {{ caseData.patient?.lastName }}</span>
-        <span class="info-sub" *ngIf="caseData.patient?.dateOfBirth">DOB: {{ caseData.patient.dateOfBirth }}</span>
+    <!-- Edit Mode -->
+    <div *ngIf="editing" class="edit-form">
+      <div class="edit-header">
+        <span class="case-number mono">{{ caseData.caseNumber }}</span>
+        <span class="edit-badge">Editing</span>
       </div>
-      <div class="info-block">
-        <span class="info-label">Program</span>
-        <span class="info-value">{{ caseData.drugBrandName }}</span>
-        <span class="info-sub">{{ caseData.programName }} · {{ caseData.manufacturerName }}</span>
+      <div class="edit-grid">
+        <div class="form-group">
+          <label class="form-label">Stage</label>
+          <select class="form-input" [(ngModel)]="editForm.stage">
+            <option *ngFor="let s of stages" [value]="s">{{ stageLabel(s) }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Priority</label>
+          <select class="form-input" [(ngModel)]="editForm.priority">
+            <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Consent Status</label>
+          <select class="form-input" [(ngModel)]="editForm.consentStatus">
+            <option *ngFor="let cs of consentStatuses" [value]="cs">{{ cs }}</option>
+          </select>
+        </div>
       </div>
-      <div class="info-block">
-        <span class="info-label">Prescriber</span>
-        <span class="info-value">{{ caseData.prescriber ? caseData.prescriber.firstName + ' ' + caseData.prescriber.lastName : '—' }}</span>
-        <span class="info-sub" *ngIf="caseData.prescriber?.npi">NPI: {{ caseData.prescriber?.npi }}</span>
+      <div class="form-group" style="margin-top:12px">
+        <label class="form-label">Notes</label>
+        <textarea class="form-input form-textarea" [(ngModel)]="editForm.notes" rows="3" placeholder="Case notes..."></textarea>
       </div>
-      <div class="info-block">
-        <span class="info-label">Assigned CM</span>
-        <span class="info-value">{{ caseData.assignedCmName || 'Unassigned' }}</span>
-      </div>
-      <div class="info-block">
-        <span class="info-label">Consent</span>
-        <span class="pill" [ngClass]="caseData.consentStatus === 'Received' ? 'ok' : 'neutral'">
-          {{ caseData.consentStatus }}
-        </span>
+      <div class="edit-actions">
+        <button class="btn-primary" (click)="saveEdit()">Save Changes</button>
+        <button class="btn-secondary" (click)="cancelEdit()">Cancel</button>
       </div>
     </div>
   </div>
@@ -54,7 +93,7 @@
          [class.active]="s === caseData.stage"
          [class.completed]="isStageCompleted(s)">
       <div class="step-dot"></div>
-      <span class="step-label">{{ s === 'FinancialAssist' ? 'Financial' : s }}</span>
+      <span class="step-label">{{ stageLabel(s) }}</span>
     </div>
   </div>
 
@@ -76,7 +115,7 @@
             <span class="te-type pill neutral">{{ entry.type }}</span>
             <span class="te-time">{{ entry.timestamp | date:'short' }}</span>
           </div>
-          <div class="te-summary">{{ entry.summary }}</div>
+          <div class="te-summary">{{ formatSummary(entry) }}</div>
           <div *ngIf="entry.details" class="te-details">{{ entry.details }}</div>
           <div class="te-by">{{ entry.performedBy }}</div>
         </div>
@@ -87,19 +126,30 @@
 
   <!-- Tasks Tab -->
   <div *ngIf="activeTab === 'tasks'" class="tab-content">
-    <div *ngFor="let task of tasks" class="task-item card">
+    <div *ngFor="let task of tasks" class="task-item card"
+         [class.task-overdue]="isOverdue(task)"
+         [class.task-completed]="task.status === 'Completed'">
       <div class="task-header">
         <span class="task-title">{{ task.title }}</span>
-        <span class="pill" [ngClass]="task.priority === 'Urgent' ? 'urgent' : task.priority === 'High' ? 'warn' : 'neutral'">
-          {{ task.priority }}
-        </span>
+        <div class="task-actions">
+          <span class="pill" [ngClass]="task.priority === 'Urgent' ? 'urgent' : task.priority === 'High' ? 'warn' : 'neutral'">
+            {{ task.priority }}
+          </span>
+          <select class="task-status-select"
+                  [ngModel]="task.status"
+                  (ngModelChange)="updateTaskStatus(task, $event)">
+            <option value="Open">Open</option>
+            <option value="InProgress">In Progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
       </div>
       <div class="task-meta">
         <span>{{ task.taskType }}</span>
-        <span *ngIf="task.dueDate">Due: {{ task.dueDate | date:'shortDate' }}</span>
-        <span class="pill" [ngClass]="task.status === 'Completed' ? 'ok' : task.status === 'InProgress' ? 'info' : 'neutral'">
-          {{ task.status }}
+        <span *ngIf="task.dueDate" [class.overdue-text]="isOverdue(task)">
+          Due: {{ task.dueDate | date:'shortDate' }}
         </span>
+        <span *ngIf="isOverdue(task)" class="overdue-badge">Overdue</span>
       </div>
     </div>
     <div *ngIf="tasks.length === 0" class="empty-state">No tasks for this case.</div>
@@ -107,6 +157,30 @@
 
   <!-- PA Tab -->
   <div *ngIf="activeTab === 'pa'" class="tab-content">
+    <div class="tab-actions">
+      <button class="btn-primary btn-sm" (click)="openPaForm()">+ Create PA</button>
+    </div>
+
+    <!-- New PA Form -->
+    <div *ngIf="showPaForm" class="pa-form card">
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label">Submission Method</label>
+          <select class="form-input" [(ngModel)]="newPa.submissionMethod">
+            <option *ngFor="let m of paSubmissionMethods" [value]="m">{{ m }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label class="form-label">Clinical Notes</label>
+        <textarea class="form-input form-textarea" [(ngModel)]="newPa.clinicalNotes" rows="3" placeholder="Clinical notes for PA submission..."></textarea>
+      </div>
+      <div class="form-actions-row">
+        <button class="btn-primary btn-sm" (click)="createPa()">Submit PA</button>
+        <button class="btn-secondary btn-sm" (click)="cancelPaForm()">Cancel</button>
+      </div>
+    </div>
+
     <div *ngFor="let pa of paList" class="pa-item card">
       <div class="pa-header">
         <span class="pa-number mono">{{ pa.paNumber || 'Draft PA' }}</span>
@@ -116,11 +190,16 @@
       </div>
       <div class="pa-meta">
         <span>Attempt #{{ pa.attemptNumber }}</span>
+        <span *ngIf="pa.submissionMethod">via {{ pa.submissionMethod }}</span>
         <span *ngIf="pa.submittedDate">Submitted: {{ pa.submittedDate }}</span>
+        <span *ngIf="pa.decisionDate">Decision: {{ pa.decisionDate }}</span>
         <span *ngIf="pa.slaBreached" class="pill urgent">SLA Breached</span>
       </div>
+      <div *ngIf="pa.denialReasonText" class="pa-denial">
+        Denial reason: {{ pa.denialReasonText }}
+      </div>
     </div>
-    <div *ngIf="paList.length === 0" class="empty-state">No prior authorizations.</div>
+    <div *ngIf="paList.length === 0 && !showPaForm" class="empty-state">No prior authorizations. Click "+ Create PA" to start one.</div>
   </div>
 
   <!-- Insurance Tab -->
@@ -130,10 +209,23 @@
         <span class="ins-sequence pill info">{{ plan.planSequence }}</span>
         <span class="ins-type">{{ plan.insuranceTypeCode }}</span>
       </div>
-      <div class="ins-details">
-        <span *ngIf="plan.payerName">{{ plan.payerName }}</span>
-        <span *ngIf="plan.planName"> · {{ plan.planName }}</span>
-        <span *ngIf="plan.memberId"> · ID: {{ plan.memberId }}</span>
+      <div class="ins-detail-grid">
+        <div class="ins-field" *ngIf="plan.payerName">
+          <span class="ins-field-label">Payer</span>
+          <span class="ins-field-value">{{ plan.payerName }}</span>
+        </div>
+        <div class="ins-field" *ngIf="plan.planName">
+          <span class="ins-field-label">Plan</span>
+          <span class="ins-field-value">{{ plan.planName }}</span>
+        </div>
+        <div class="ins-field" *ngIf="plan.memberId">
+          <span class="ins-field-label">Member ID</span>
+          <span class="ins-field-value mono">{{ plan.memberId }}</span>
+        </div>
+        <div class="ins-field" *ngIf="plan.groupId">
+          <span class="ins-field-label">Group ID</span>
+          <span class="ins-field-value mono">{{ plan.groupId }}</span>
+        </div>
       </div>
     </div>
     <div *ngIf="insurancePlans.length === 0" class="empty-state">No insurance plans recorded.</div>

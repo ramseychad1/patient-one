@@ -206,3 +206,19 @@ export interface Page<T> {
   number: number;
   size: number;
 }
+
+/** Human-readable labels for case stages */
+export const STAGE_LABELS: Record<string, string> = {
+  'Referral': 'Referral',
+  'Enrollment': 'Enrollment',
+  'BIVB': 'BI/BV',
+  'PA': 'PA',
+  'FinancialAssist': 'Financial Assist',
+  'Initiation': 'Initiation',
+  'Adherence': 'Adherence',
+  'Closed': 'Closed',
+};
+
+export function stageLabel(stage: string): string {
+  return STAGE_LABELS[stage] || stage;
+}

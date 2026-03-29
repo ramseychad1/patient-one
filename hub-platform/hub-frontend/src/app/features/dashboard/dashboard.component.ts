@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
-import { CaseDto, Page } from '../../core/models';
+import { CaseDto, CaseTaskDto, Page, stageLabel } from '../../core/models';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,11 +13,14 @@ import { CaseDto, Page } from '../../core/models';
 })
 export class DashboardComponent implements OnInit {
   cases: CaseDto[] = [];
+  tasks: CaseTaskDto[] = [];
   totalCases = 0;
   urgentCount = 0;
   slaBreachCount = 0;
+  pendingConsentCount = 0;
   activeFilter = 'All';
   stages = ['All', 'Referral', 'Enrollment', 'BIVB', 'PA', 'FinancialAssist', 'Initiation', 'Adherence'];
+  stageLabel = stageLabel;
 
   constructor(private api: ApiService) {}
 
@@ -31,6 +34,7 @@ export class DashboardComponent implements OnInit {
       this.totalCases = page.totalElements;
       this.urgentCount = this.cases.filter(c => c.priority === 'Urgent').length;
       this.slaBreachCount = this.cases.filter(c => c.slaBreachFlag).length;
+      this.pendingConsentCount = this.cases.filter(c => c.consentStatus === 'Pending').length;
     });
   }
 

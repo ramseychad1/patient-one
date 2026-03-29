@@ -50,6 +50,10 @@
     text-transform: uppercase; letter-spacing: 0.04em;
     background: var(--page);
   }
+  &:not(.header) {
+    transition: background 0.1s;
+    &:hover { background: var(--brand-tint); }
+  }
 }
 .dt-row-users {
   grid-template-columns: 1fr 1.2fr 100px 100px 80px 120px 80px;

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { CaseTaskDto, Page } from '../../core/models';
@@ -7,7 +8,7 @@ import { CaseTaskDto, Page } from '../../core/models';
 @Component({
   selector: 'app-task-queue',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './task-queue.component.html',
   styleUrl: './task-queue.component.scss'
 })
@@ -19,6 +20,10 @@ export class TaskQueueComponent implements OnInit {
   constructor(private api: ApiService) {}
 
   ngOnInit(): void {
+    this.loadTasks();
+  }
+
+  loadTasks(): void {
     this.api.get<Page<CaseTaskDto>>('/tasks/mine', { page: 0, size: 100 }).subscribe(page => {
       this.tasks = page.content;
     });
@@ -36,7 +41,14 @@ export class TaskQueueComponent implements OnInit {
   }
 
   isOverdue(task: CaseTaskDto): boolean {
-    if (!task.dueDate) return false;
+    if (!task.dueDate || task.status === 'Completed') return false;
     return new Date(task.dueDate) < new Date();
+  }
+
+  updateTaskStatus(task: CaseTaskDto, newStatus: string): void {
+    this.api.patch<CaseTaskDto>(`/cases/${task.caseId}/tasks/${task.id}`, { status: newStatus }).subscribe(updated => {
+      const idx = this.tasks.findIndex(t => t.id === task.id);
+      if (idx >= 0) this.tasks[idx] = updated;
+    });
   }
 }

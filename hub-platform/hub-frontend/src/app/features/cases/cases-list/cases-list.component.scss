@@ -5,6 +5,10 @@
 .page-title { font-size: 22px; font-weight: 700; color: var(--t1); margin-bottom: 2px; }
 .page-sub { font-size: 13px; color: var(--t3); }
 
+.header-actions {
+  display: flex; align-items: center; gap: 12px;
+}
+
 .search-input {
   padding: 8px 14px; border-radius: var(--r-md);
   border: 1.5px solid var(--border-md); background: var(--card);
@@ -12,6 +16,38 @@
   outline: none; width: 260px; transition: border-color 0.15s;
   &:focus { border-color: var(--brand); }
   &::placeholder { color: var(--t3); }
+}
+
+// Create form
+.create-form {
+  padding: 20px 24px; margin-bottom: 16px;
+}
+.form-title {
+  font-size: 16px; font-weight: 700; color: var(--t1); margin-bottom: 16px;
+}
+.form-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--t2); }
+.form-input {
+  padding: 8px 12px; border-radius: var(--r-md);
+  border: 1.5px solid var(--border-md); background: var(--page);
+  color: var(--t1); font-family: var(--font); font-size: 13px;
+  outline: none; transition: border-color 0.15s;
+  &:focus { border-color: var(--brand); }
+}
+.form-actions { display: flex; gap: 8px; }
+
+// Filter chips
+.filter-row {
+  display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.filter-chip {
+  padding: 5px 14px; border-radius: var(--r-pill);
+  border: 1.5px solid var(--border-md); background: transparent;
+  color: var(--t2); font-size: 12px; font-weight: 600;
+  font-family: var(--font); cursor: pointer; transition: all 0.12s;
+  &:hover { border-color: var(--brand); color: var(--brand); }
+  &.active { background: var(--brand); border-color: var(--brand); color: #fff; }
 }
 
 .cases-table { overflow: hidden; }

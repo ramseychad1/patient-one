@@ -21,8 +21,8 @@
     <span class="stat-label">SLA Breaches</span>
   </div>
   <div class="stat-card">
-    <span class="stat-value">{{ filteredCases.length }}</span>
-    <span class="stat-label">Showing</span>
+    <span class="stat-value">{{ pendingConsentCount }}</span>
+    <span class="stat-label">Pending Consent</span>
   </div>
 </div>
 
@@ -32,7 +32,7 @@
           class="filter-chip"
           [class.active]="activeFilter === stage"
           (click)="filterByStage(stage)">
-    {{ stage === 'FinancialAssist' ? 'Financial' : stage }}
+    {{ stage === 'All' ? 'All' : stageLabel(stage) }}
   </button>
 </div>
 
@@ -58,7 +58,7 @@
       <span class="program-name">{{ c.programName }}</span>
     </span>
     <span class="col-stage">
-      <span class="pill" [ngClass]="getStagePillClass(c.stage)">{{ c.stage }}</span>
+      <span class="pill" [ngClass]="getStagePillClass(c.stage)">{{ stageLabel(c.stage) }}</span>
     </span>
     <span class="col-priority">
       <span class="pill" [ngClass]="getPriorityClass(c.priority)">{{ c.priority }}</span>

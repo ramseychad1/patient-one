@@ -30,6 +30,34 @@
 .info-value { font-size: 14px; font-weight: 600; color: var(--t1); }
 .info-sub { font-size: 11px; color: var(--t3); }
 
+// Edit form
+.edit-form { padding: 4px 0; }
+.edit-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+}
+.edit-badge {
+  font-size: 11px; font-weight: 600; color: var(--brand);
+  background: var(--brand-tint); padding: 2px 10px; border-radius: var(--r-pill);
+}
+.edit-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.edit-actions {
+  display: flex; gap: 8px; margin-top: 16px;
+}
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--t2); }
+.form-input {
+  padding: 8px 12px; border-radius: var(--r-md);
+  border: 1.5px solid var(--border-md); background: var(--page);
+  color: var(--t1); font-family: var(--font); font-size: 13px;
+  outline: none; transition: border-color 0.15s;
+  &:focus { border-color: var(--brand); }
+}
+.form-textarea {
+  resize: vertical; min-height: 60px;
+}
+
 // Journey progress bar
 .journey-bar {
   display: flex; padding: 16px 24px; margin-bottom: 16px; gap: 4px;
@@ -42,17 +70,19 @@
 
   &.active {
     background: var(--brand-tint); color: var(--brand); font-weight: 700;
-    .step-dot { background: var(--brand); }
+    .step-dot { background: var(--brand); box-shadow: 0 0 0 3px rgba(228,31,53,0.2); }
   }
   &.completed {
     color: var(--s-ok);
     .step-dot { background: var(--s-ok); }
+    .step-label { text-decoration: line-through; text-decoration-color: rgba(22,101,52,0.3); }
   }
 }
 
 .step-dot {
   width: 8px; height: 8px; border-radius: 50%;
   background: var(--border-strong); flex-shrink: 0;
+  transition: all 0.2s;
 }
 
 // Tabs
@@ -72,6 +102,10 @@
 }
 
 .tab-content { min-height: 200px; }
+
+.tab-actions {
+  display: flex; justify-content: flex-end; margin-bottom: 12px;
+}
 
 // Timeline
 .timeline { display: flex; flex-direction: column; gap: 0; }
@@ -96,21 +130,56 @@
 // Tasks
 .task-item {
   padding: 14px 18px; margin-bottom: 8px;
+
+  &.task-overdue { border-left: 3px solid var(--s-urgent); }
+  &.task-completed {
+    opacity: 0.6;
+    .task-title { text-decoration: line-through; }
+  }
 }
 .task-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .task-title { font-size: 13px; font-weight: 600; color: var(--t1); }
+.task-actions { display: flex; align-items: center; gap: 8px; }
 .task-meta { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--t3); }
+.overdue-text { color: var(--s-urgent) !important; font-weight: 600; }
+.overdue-badge {
+  font-size: 10px; font-weight: 700; color: var(--s-urgent);
+  background: var(--s-urgent-bg); padding: 1px 8px; border-radius: var(--r-pill);
+}
+
+.task-status-select {
+  padding: 4px 8px; border-radius: var(--r-md);
+  border: 1.5px solid var(--border-md); background: var(--card);
+  color: var(--t1); font-family: var(--font); font-size: 11px; font-weight: 600;
+  cursor: pointer; outline: none;
+  &:focus { border-color: var(--brand); }
+}
 
 // PA
+.pa-form { padding: 16px 18px; margin-bottom: 12px; }
+.form-row-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.form-actions-row { display: flex; gap: 8px; margin-top: 12px; }
+.btn-sm { padding: 6px 14px; font-size: 12px; }
+
 .pa-item { padding: 14px 18px; margin-bottom: 8px; }
 .pa-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
 .pa-number { font-size: 13px; font-weight: 600; }
 .pa-meta { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--t3); }
+.pa-denial {
+  margin-top: 8px; padding: 8px 12px; font-size: 12px;
+  background: var(--s-urgent-bg); color: var(--s-urgent);
+  border-radius: var(--r-md);
+}
 
 // Insurance
 .insurance-item { padding: 14px 18px; margin-bottom: 8px; }
-.ins-header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.ins-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .ins-type { font-size: 13px; font-weight: 600; color: var(--t1); }
-.ins-details { font-size: 12px; color: var(--t2); }
+.ins-detail-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+.ins-field { display: flex; flex-direction: column; gap: 2px; }
+.ins-field-label { font-size: 10px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: 0.04em; }
+.ins-field-value { font-size: 13px; font-weight: 500; color: var(--t1); }
 
 .empty-state { padding: 40px; text-align: center; color: var(--t3); font-size: 14px; }

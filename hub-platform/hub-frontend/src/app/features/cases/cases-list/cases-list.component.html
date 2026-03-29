@@ -6,7 +6,65 @@
   <div class="header-actions">
     <input class="search-input" type="text" placeholder="Search cases..."
            [(ngModel)]="searchTerm">
+    <button class="btn-primary" (click)="openCreateForm()">+ Create Case</button>
   </div>
+</div>
+
+<!-- Create Case Form -->
+<div *ngIf="showCreateForm" class="create-form card">
+  <h3 class="form-title">New Case</h3>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Program</label>
+      <select class="form-input" [(ngModel)]="newCase.programId">
+        <option value="">Select program</option>
+        <option *ngFor="let p of programs" [value]="p.id">{{ p.name }} ({{ p.drugBrandName }})</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">First Name</label>
+      <input class="form-input" [(ngModel)]="newCase.firstName" placeholder="Patient first name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Last Name</label>
+      <input class="form-input" [(ngModel)]="newCase.lastName" placeholder="Patient last name">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Date of Birth</label>
+      <input class="form-input" type="date" [(ngModel)]="newCase.dateOfBirth">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Enrollment Source</label>
+      <select class="form-input" [(ngModel)]="newCase.enrollmentSource">
+        <option value="Portal">Portal</option>
+        <option value="eRX">eRX</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Priority</label>
+      <select class="form-input" [(ngModel)]="newCase.priority">
+        <option value="Normal">Normal</option>
+        <option value="High">High</option>
+        <option value="Urgent">Urgent</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-actions">
+    <button class="btn-primary" (click)="createCase()">Create Case</button>
+    <button class="btn-secondary" (click)="cancelCreate()">Cancel</button>
+  </div>
+</div>
+
+<!-- Stage Filters -->
+<div class="filter-row">
+  <button *ngFor="let stage of stages"
+          class="filter-chip"
+          [class.active]="activeStageFilter === stage"
+          (click)="filterByStage(stage)">
+    {{ stage === 'All' ? 'All' : stageLabel(stage) }}
+  </button>
 </div>
 
 <div class="cases-table card">
@@ -27,7 +85,7 @@
     <span class="col-patient">{{ c.patient?.firstName }} {{ c.patient?.lastName }}</span>
     <span class="col-program">{{ c.drugBrandName }}</span>
     <span class="col-stage">
-      <span class="pill" [ngClass]="getStagePillClass(c.stage)">{{ c.stage }}</span>
+      <span class="pill" [ngClass]="getStagePillClass(c.stage)">{{ stageLabel(c.stage) }}</span>
     </span>
     <span class="col-priority">
       <span class="pill" [ngClass]="c.priority === 'Urgent' ? 'urgent' : c.priority === 'High' ? 'warn' : 'neutral'">

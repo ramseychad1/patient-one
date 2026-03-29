@@ -40,17 +40,22 @@
 }
 
 [data-theme="dark"] {
-  --page: #111009;
-  --card: #1c1b16;
-  --border: rgba(255,255,255,0.07);
-  --border-md: rgba(255,255,255,0.12);
-  --border-strong: rgba(255,255,255,0.18);
+  --page: #0e0d08;
+  --card: #1e1d17;
+  --border: rgba(255,255,255,0.08);
+  --border-md: rgba(255,255,255,0.14);
+  --border-strong: rgba(255,255,255,0.20);
   --t1: #f0ede8;
   --t2: #9c9690;
   --t3: #6b6560;
-  --brand-tint: rgba(228,31,53,0.10);
-  --sh-card: 0 4px 24px rgba(0,0,0,0.4);
+  --brand-tint: rgba(228,31,53,0.12);
+  --sh-card: 0 4px 24px rgba(0,0,0,0.5);
   --nav-bg: #0a0905;
+  --s-urgent-bg: rgba(220,38,38,0.15);
+  --s-warn-bg: rgba(146,64,14,0.15);
+  --s-info-bg: rgba(30,64,175,0.15);
+  --s-ok-bg: rgba(22,101,52,0.15);
+  --s-neutral-bg: rgba(75,85,99,0.15);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

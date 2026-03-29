@@ -26,6 +26,12 @@ export class MainLayoutComponent {
     return this.userName.charAt(0).toUpperCase();
   }
 
+  get userRole(): string {
+    const user = this.authService.getCurrentUser();
+    if (user?.roles?.length) return user.roles[0];
+    return 'User';
+  }
+
   toggleTheme(): void {
     this.themeService.toggle();
   }
